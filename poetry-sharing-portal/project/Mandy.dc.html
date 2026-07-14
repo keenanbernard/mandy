@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #0b0b0d; }
+  * { box-sizing: border-box; }
+  ::selection { background: rgba(255,255,255,0.16); color: #fff; }
+  input::placeholder { color: #55555c; opacity: 1; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-3px); } 40%, 60% { transform: translateX(3px); } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; position: relative; background: #0b0b0d; overflow: hidden; font-family: 'Inter', sans-serif; color: #f2f1ee;">
+
+  <div style="{{ glowStyle }}"></div>
+  <div style="position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0.035; mix-blend-mode: overlay; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"></div>
+
+  <div style="position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8vh 24px;">
+
+    <sc-if value="{{ isEntry }}" hint-placeholder-val="{{ true }}">
+      <div style="max-width: 420px; width: 100%; text-align: left; animation: fadein 1.2s ease both;">
+        <div style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; color: #58585f; margin-bottom: 2rem;">private collection</div>
+        <p style="font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; font-size: clamp(20px, 3vw, 24px); line-height: 1.6; color: #cfcdc6; margin: 0 0 3rem; max-width: 32ch;">Some things I could never say aloud, so I wrote them down instead — only for you. Whisper the word only you would know.</p>
+        <div style="display: flex; align-items: center; border-bottom: 1px solid #2c2c31; padding-bottom: 0.9rem; transition: border-color 0.3s ease;">
+          <input type="text" value="{{ code }}" onChange="{{ onCode }}" onKeyDown="{{ onKey }}" placeholder="the word only you know" autoFocus="{{ true }}" spellcheck="false" autocomplete="off" style="flex: 1; background: transparent; border: none; color: #f2f1ee; font-family: 'Inter', sans-serif; font-size: 17px; padding: 0; outline: none; caret-color: #f2f1ee; letter-spacing: 0.01em;">
+          <div onClick="{{ submit }}" style="cursor: pointer; color: #6d6d75; font-size: 20px; line-height: 1; padding-left: 1rem; transition: color 0.3s ease, transform 0.3s ease;" style-hover="color: #f2f1ee; transform: translateX(3px);">→</div>
+        </div>
+        <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 1.2rem; font-family: 'Inter', sans-serif; font-size: 13px; color: #d68e83; letter-spacing: 0.02em; animation: shake 0.4s ease both;">not quite — try again.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isIndex }}" hint-placeholder-val="{{ false }}">
+      <div style="width: 100%; max-width: 680px; animation: rise 0.9s ease both;">
+        <div style="margin-bottom: 4rem;">
+          <div style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; color: #58585f; margin-bottom: 1rem;">for you</div>
+          <div style="font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(48px, 8vw, 76px); line-height: 0.95; color: #f2f1ee; letter-spacing: -0.01em;">Mandy</div>
+        </div>
+        <div style="border-top: 1px solid #212125;">
+          <sc-for list="{{ poems }}" as="poem" hint-placeholder-count="5">
+            <div onClick="{{ poem.open }}" style="display: flex; align-items: baseline; gap: 1.6rem; padding: 1.7rem 0.2rem; border-bottom: 1px solid #212125; cursor: pointer; transition: background 0.3s ease, padding-left 0.3s ease;" style-hover="background: rgba(255,255,255,0.02); padding-left: 0.9rem;">
+              <div style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px; color: #6d6d75; min-width: 2rem; letter-spacing: 0.06em; flex-shrink: 0;">{{ poem.num }}</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; font-size: 21px; color: #dcdad3; line-height: 1.4;">{{ poem.teaser }}</div>
+              </div>
+              <sc-if value="{{ showDates }}" hint-placeholder-val="{{ true }}">
+                <div style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; color: #58585f; letter-spacing: 0.1em; flex-shrink: 0; white-space: nowrap;">{{ poem.shortDate }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 3rem; font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #45454b;">always — yours</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPoem }}" hint-placeholder-val="{{ false }}">
+      <div style="width: 100%; max-width: 640px; padding: 2vh 0 4vh;">
+        <div onClick="{{ goIndex }}" style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #6d6d75; margin-bottom: 3.5rem; transition: color 0.3s ease;" style-hover="color: #f2f1ee;">← collection</div>
+        <div style="animation: rise 0.9s ease both;">
+          <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 3rem;">
+            <div style="font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(40px, 7vw, 60px); color: #f2f1ee; letter-spacing: -0.01em;">Mandy</div>
+            <div style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; color: #58585f; letter-spacing: 0.08em;">{{ current.num }}</div>
+          </div>
+          <div style="{{ bodyStyle }}">
+            <sc-for list="{{ current.stanzas }}" as="stanza" hint-placeholder-count="4">
+              <div style="margin-bottom: 1.7em;">
+                <sc-for list="{{ stanza }}" as="line" hint-placeholder-count="2">
+                  <div style="line-height: 1.55;">{{ line }}</div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ showCurrentDate }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 2.5rem; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: #58585f; letter-spacing: 0.08em;">{{ current.date }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: &quot;100%&quot;, &quot;height&quot;: &quot;100%&quot; },
+  &quot;showDates&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Reading&quot; },
+  &quot;align&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;left&quot;, &quot;options&quot;: [&quot;left&quot;, &quot;center&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Reading&quot; },
+  &quot;glow&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.4, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.05, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Ambience&quot; }
+}">
+class Component extends DCLogic {
+  state = { screen: 'entry', code: '', error: false, current: 0 };
+
+  poems = [
+    {
+      num: 'I',
+      teaser: 'Why must one only sip from the oasis…',
+      date: '© Mar 17',
+      shortDate: 'MAR 17',
+      stanzas: [
+        ['Why must one only sip from the oasis,', 'forever thirsting', 'for another indulgence?'],
+        ['The world is as cold', 'as it is bountiful.'],
+        ["You've yet to comprehend", 'the weight of such a distance in time.'],
+        ['She showed her true feelings last night.'],
+        ['Do I await my slumber', 'in the abyss of my own feelings,', 'to ponder the message of yesterday?'],
+        ['I wonder.'],
+        ['She likes the concept of me,', 'yet my presence annoys her.'],
+        ['To experience love', 'is to accept', 'the possibility of hate.'],
+        ['Forever in a state of give.'],
+        ['When am I to receive?'],
+        ['Thus is the question', "I've yet to answer."],
+        ['To choose hostility over facts—', 'such a display of hate', 'is saddening.'],
+        ['Oh, my heart yearns,', 'only to be burnt.'],
+        ['Crumbled.', 'And tossed to the wayside.'],
+      ],
+    },
+    {
+      num: 'II',
+      teaser: 'She hates me, yet I crave her.',
+      date: '© Mar 17',
+      shortDate: 'MAR 17',
+      stanzas: [
+        ['She hates me', 'yet I crave her.'],
+        ['The more one yearns,', 'the more one loves,', 'the more one must acknowledge', 'a place of loathe', 'and disdain.'],
+        ['For affection,', 'when it burns too bright,', 'casts shadows just as deep.'],
+        ['Like a delphinium in bloom —', 'beautiful, delicate, fatal.'],
+        ['To experience its affection', 'is to pay', "with one's life."],
+        ['Yet still I reach for it.'],
+        ['Still I yearn.'],
+        ['Still I love.'],
+      ],
+    },
+    {
+      num: 'III',
+      teaser: "It's been years since I've been guided to the oasis…",
+      date: '',
+      shortDate: '',
+      stanzas: [
+        ["It's—", "It's been—", "It's been years since I've been guided", 'to the oasis.'],
+        ['To have a drink', 'is like a double-edged sword.'],
+        ['An unquenchable desire,', "yet I've had my fill."],
+        ['A rigid dichotomy', 'between pleasure and pain,', 'between longing and restraint.'],
+        ['For what is thirst', 'if not a reminder', 'of what once satisfied?'],
+        ['And what is satisfaction', 'if it leaves behind', 'a deeper craving?'],
+        ['I sip,', 'knowing the cost.'],
+        ['I step forward,', 'knowing the fall.'],
+        ['For the oasis does not quench…', 'it awakens.'],
+        ['And I,', 'once empty,', 'now overflow', 'with a thirst', 'that only she can silence.'],
+      ],
+    },
+    {
+      num: 'IV',
+      teaser: 'All I have is affection for her, yet to receive.',
+      date: '© Apr 5',
+      shortDate: 'APR 5',
+      stanzas: [
+        ['All I have', 'is affection for her,', 'yet to receive.'],
+        ['Only to claim disrespect—', 'no…', 'to be given it.'],
+        ['Piece by piece,', 'she breaks me,', 'quietly,', 'without intention.'],
+        ['And still—', 'I stand by my morals,', 'never acting outside myself.'],
+        ['What is this?'],
+        ['Madness.'],
+        ['For I remain—', 'always.'],
+        ['And she says', 'maybe I like her.'],
+        ["Maybe it's her", 'who is unsure of me.'],
+        ['While I stand firm', 'in my ways,', 'unwavering—', 'even as I bend.'],
+        ['A contradiction,', 'a man divided', 'between logic and longing.'],
+        ['And still…', 'I choose her.'],
+      ],
+    },
+    {
+      num: 'V',
+      teaser: 'Those lips, breath held, the world going quiet.',
+      date: "My Muse. '06   ·   © Jun 7",
+      shortDate: 'JUN 7',
+      stanzas: [
+        ['Those lips, breath held,', 'the world going quiet.'],
+        ['A sudden pause', 'before soft contact.'],
+        ['Both of the same architecture,', 'are they not?', 'A kiss and a heartbreak.'],
+        ['For what is tenderness', 'if not a warning?'],
+        ['What is warmth', 'if not a debt', 'you pay in the dark?'],
+        ['She leaned in.', 'I remained.'],
+        ['As I always do.'],
+        ['Piece by piece,', 'the soft thing undoes me', 'quietly… without intention.'],
+        ['And still I lean.'],
+        ['I have learned', 'that the sweetest contact', 'carries the deepest cost.'],
+        ['A kiss does not resolve.'],
+        ['It awakens.'],
+        ['And I once whole, now open —', 'split by something that asked', 'nothing of me but everything.'],
+        ['My heart, tender as ever, mending.'],
+      ],
+    },
+  ];
+
+  submit() {
+    const ok = (this.state.code || '').trim().toLowerCase() === 'babygirl';
+    if (ok) this.setState({ screen: 'index', error: false });
+    else this.setState({ error: true });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const showDates = this.props.showDates ?? true;
+    const glow = this.props.glow ?? 0.4;
+    const align = this.props.align ?? 'left';
+    const current = this.poems[s.current] || this.poems[0];
+
+    return {
+      isEntry: s.screen === 'entry',
+      isIndex: s.screen === 'index',
+      isPoem: s.screen === 'poem',
+      isError: s.error,
+      code: s.code,
+      showDates,
+      showCurrentDate: showDates && !!current.date,
+      current,
+      poems: this.poems.map((p, i) => ({
+        num: p.num,
+        teaser: p.teaser,
+        shortDate: p.shortDate,
+        open: () => this.setState({ screen: 'poem', current: i }),
+      })),
+      onCode: (e) => this.setState({ code: e.target.value, error: false }),
+      onKey: (e) => { if (e.key === 'Enter') this.submit(); },
+      submit: () => this.submit(),
+      goIndex: () => this.setState({ screen: 'index' }),
+      glowStyle: {
+        position: 'absolute',
+        inset: 0,
+        pointerEvents: 'none',
+        zIndex: 0,
+        background: 'radial-gradient(60% 50% at 80% 0%, rgba(255,255,255,0.05) 0%, transparent 60%)',
+        opacity: glow,
+      },
+      bodyStyle: {
+        fontFamily: "'Fraunces', serif",
+        fontWeight: 300,
+        fontSize: 'clamp(19px, 2.3vw, 23px)',
+        letterSpacing: '0.005em',
+        color: '#dcdad3',
+        textAlign: align,
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
