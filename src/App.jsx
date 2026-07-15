@@ -185,7 +185,7 @@ export default function App() {
               private collection
             </div>
             <p style={{ fontFamily: "'Fraunces', serif", fontStyle: 'italic', fontWeight: 300, fontSize: 'clamp(20px, 3vw, 24px)', lineHeight: 1.6, color: '#cfcdc6', margin: '0 0 3rem', maxWidth: '32ch' }}>
-              Some things I could never say aloud, so I wrote them down instead — only for you. Whisper the word only you would know.
+              Every word was always yours; only yours. I built this place to keep them safe, so you'd always have somewhere to come back to. Enter the name only you would know.
             </p>
             <div className="entry-input-row">
               <input
