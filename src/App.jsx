@@ -1,7 +1,51 @@
 import { useState } from 'react'
 import './App.css'
 
+const BIRTHDAY_POEM = {
+  num: '🖤',
+  teaser: 'Happy Birthday my gorgeous princess, my precious baby girl 🖤',
+  date: '© Jul 22',
+  shortDate: 'JUL 22',
+  stanzas: [
+    ['Happy Birthday my gorgeous princess,', 'my precious baby girl 🖤'],
+    ['Those perfect glutes may have caught my attention', 'but your vibrant personality', 'got me hooked and kept me here.'],
+    ["You're such a sweetheart, a genuine girl", "and I appreciate how you've been with me", "since I've met you."],
+    ["You're almost gone", 'and this may be the only birthday we spend together.', 'I will be missing these:'],
+    [
+      '1. Your smile',
+      '2. Those lips that give the best kisses',
+      '3. Your warm embrace in every hug',
+      '4. Your perfect glutes',
+      '5. Your contagious laugh',
+      '6. Your pretty face',
+      '7. The way you walk',
+      '8. Your randomness',
+      '9. Your A1 cooking (those eggs girlie)',
+      '10. The way you hold my arms',
+    ],
+    [
+      '11. Your glutes (ugh those glutes)',
+      '12. How excited you get about desserts and fruits',
+      '13. Our walks together',
+      '14. How caring you are',
+      '15. Our training sessions',
+      '16. Our greeting at the gym every night',
+      '17. Your glutes',
+      '18. Our long hugs in the car',
+      '19. Your leg days',
+      '20. Everything that you are, babygirl 🖤',
+    ],
+    ["I'd always choose you", "and everything we went through."],
+  ],
+}
+
+function isBirthday() {
+  const now = new Date()
+  return now.getMonth() === 6 && now.getDate() === 22
+}
+
 const POEMS = [
+  BIRTHDAY_POEM,
   {
     num: 'I',
     teaser: 'Why must one only sip from the oasis…',
@@ -130,11 +174,13 @@ export default function App() {
   const [current, setCurrent] = useState(() => sharedIdx ?? 0)
   const [fromCollection, setFromCollection] = useState(false)
   const [copied, setCopied] = useState(null)
+  const [showBirthdayPopup, setShowBirthdayPopup] = useState(false)
 
   function submit() {
     if ((code || '').trim().toLowerCase() === 'babygirl') {
       setScreen('index')
       setError(false)
+      if (isBirthday()) setShowBirthdayPopup(true)
     } else {
       setError(true)
       setErrorKey(k => k + 1)
@@ -175,6 +221,51 @@ export default function App() {
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, background: 'radial-gradient(60% 50% at 80% 0%, rgba(255,255,255,0.05) 0%, transparent 60%)', opacity: 0.4 }} />
       {/* noise */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1, opacity: 0.035, mixBlendMode: 'overlay', backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
+
+      {/* ── birthday popup ── */}
+      {showBirthdayPopup && (
+        <div
+          style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', background: 'rgba(11,11,13,0.85)', backdropFilter: 'blur(6px)', animation: 'fadein 0.5s ease both' }}
+          onClick={() => setShowBirthdayPopup(false)}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ position: 'relative', width: '100%', maxWidth: '520px', maxHeight: '85vh', overflowY: 'auto', background: '#111115', border: '1px solid #2a2820', borderRadius: '6px', padding: 'clamp(2rem, 5vw, 3rem)', animation: 'rise 0.6s ease both' }}
+          >
+            <button
+              onClick={() => setShowBirthdayPopup(false)}
+              style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none', color: '#58585f', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px 8px' }}
+            >
+              ×
+            </button>
+
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', fontWeight: 600, letterSpacing: '0.32em', textTransform: 'uppercase', color: '#7a6840', marginBottom: '1.5rem' }}>
+              happy birthday 🖤
+            </div>
+
+            <div style={{ fontFamily: "'Fraunces', serif", fontWeight: 300, fontSize: 'clamp(17px, 2.5vw, 21px)', color: '#dcdad3', lineHeight: 1.7 }}>
+              {BIRTHDAY_POEM.stanzas.map((stanza, si) => (
+                <div key={si} style={{ marginBottom: '1.5em' }}>
+                  {stanza.map((line, li) => (
+                    <div key={li}>{line}</div>
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: '2rem', fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#7a6840', letterSpacing: '0.1em' }}>
+              JUL 22
+            </div>
+
+            <button
+              onClick={() => setShowBirthdayPopup(false)}
+              style={{ marginTop: '2rem', background: 'none', border: '1px solid #2a2820', borderRadius: '3px', color: '#58585f', fontFamily: "'Inter', sans-serif", fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '0.6rem 1.4rem', cursor: 'pointer', display: 'block' }}
+            >
+              close
+            </button>
+          </div>
+        </div>
+      )}
 
       <div style={{ position: 'relative', zIndex: 2, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8vh 24px' }}>
 
